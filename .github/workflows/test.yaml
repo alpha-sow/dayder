@@ -13,17 +13,10 @@ env:
   SONARQUBE_TOKEN: ${{secrets.SONARQUBE_TOKEN }}
   PROJECT_KEY: ${{ secrets.PROJECT_KEY }}
 jobs:
-  test-coverage:
-    name: Test coverage
+  Setup-env:
+    name: Setup env
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Sonar file
-        run: |
-          echo "${{ secrets.SONAR_PROJECT_FILE }}" > sonar-project.properties
-
       - name: Install sonar-scanner
         run: |
           wget --output-document=sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SC_VERSION-linux.zip
@@ -34,6 +27,18 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: "stable"
+
+  flutter-coverage:
+    name: Test coverage
+    runs-on: ubuntu-latest
+    needs: [ Setup-env ]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Sonar file
+        run: |
+          echo "${{ secrets.SONAR_PROJECT_FILE }}" > sonar-project.properties
 
       - name: Get dependencies
         run: |
