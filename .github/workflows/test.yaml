@@ -29,9 +29,9 @@ jobs:
           channel: "stable"
 
   flutter-coverage:
-    name: Test coverage
+    name: flutter test coverage
     runs-on: ubuntu-latest
-    needs: [ Setup-env ]
+    needs: Setup-env
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -42,9 +42,9 @@ jobs:
 
       - name: Get dependencies
         run: |
-          flutter pub get
+          needs.Setup-env.flutter pub get
 
       - name: Flutter test coverage
         run: |
-          flutter test --machine --coverage > tests.output
-          sonar-scanner
+          needs.Setup-env.flutter test --machine --coverage > tests.output
+          needs.Setup-env.sonar-scanner
